@@ -1,4 +1,4 @@
 [
-    {"name": "Milk", "expiration_date": "2024-10-15"},
-    {"name": "Eggs", "expiration_date": "2024-10-20"}
+    {"name": "Milk", "expiration_date": "10-15-2024"},
+    {"name": "Eggs", "expiration_date": "10-20-2024"}
 ]

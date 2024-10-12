@@ -29,7 +29,17 @@ def save_food_items():
 
 @app.route('/')
 def home():
-    return "Welcome to the SmartShelf API! Available endpoints: /add_food, /food_items, /delete_food/<id>, /update_food/<id>, /notify_expiring"
+    return """
+        <h1>Welcome to the SmartShelf API!</h1>
+        <p>Available endpoints:</p>
+        <ul>
+            <li>/add_food (POST)</li>
+            <li>/food_items (GET)</li>
+            <li>/delete_food/&lt;id&gt; (DELETE)</li>
+            <li>/update_food/&lt;id&gt; (PUT)</li>
+            <li>/notify_expiring (GET)</li>
+        </ul>
+    """
 
 @app.route('/add_food', methods=['POST'])
 def add_food():
@@ -63,7 +73,6 @@ def add_food():
 def get_food_items():
     return jsonify({"food_items": food_items}), 200
 
-# Update the delete_food route to delete by unique ID
 @app.route('/delete_food/<string:item_id>', methods=['DELETE'])
 def delete_food(item_id):
     item = next((item for item in food_items if item['id'] == item_id), None)
@@ -79,7 +88,6 @@ def update_food(item_id):
     item = next((item for item in food_items if item['id'] == item_id), None)
     
     if item:
-        # Update the item if it's found
         item['name'] = data.get('name', item['name'])  # Update name if provided
         expiration_date = data.get('expiration_date')
         
@@ -100,31 +108,10 @@ def notify_expiring():
     today = datetime.now().date()
     expiring_items = [
         item for item in food_items
-    if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
+        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
     ]
     return jsonify({"expiring_items": expiring_items}), 200
 
-
-# Define a route for the homepage
-@app.route('/')
-def home():
-    return """
-        <h1>Welcome to the SmartShelf API!</h1>
-        <p>Available endpoints:</p>
-        <ul>
-            <li>/add_food (POST)</li>
-            <li>/food_items (GET)</li>
-            <li>/delete_food/<id> (DELETE)</li>
-            <li>/update_food/<id> (PUT)</li>
-            <li>/notify_expiring (GET)</li>
-        </ul>
-    """
-
-# Define a route that returns a JSON response
-@app.route('/data')
-def get_data():
-    return jsonify({"message": "This is a simple JSON response", "status": "success"})
-
 if __name__ == '__main__':
-    load_food_items()  
+    load_food_items()  # Load existing food items on startup
     app.run(debug=True)
