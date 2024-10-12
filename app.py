@@ -22,11 +22,6 @@ def load_food_items():
     except FileNotFoundError:
         food_items = []
 
-# Save food items to a JSON file (optional)
-def save_food_items():
-    with open('food_items.json', 'w') as file:
-        json.dump(food_items, file)
-
 @app.route('/add_food', methods=['POST'])
 def add_food():
     data = request.get_json()
@@ -54,7 +49,6 @@ def add_food():
 
     save_food_items()  # Save to file
     return jsonify({"message": "Food item added successfully", "food_items": food_items}), 201
-
 
 @app.route('/food_items', methods=['GET'])
 def get_food_items():
@@ -92,7 +86,6 @@ def update_food(item_id):
         return jsonify({"message": "Food item updated", "food_item": item}), 200
     return jsonify({"error": "Item not found"}), 404
 
-
 @app.route('/notify_expiring', methods=['GET'])
 def notify_expiring():
     today = datetime.now().date()
@@ -102,6 +95,27 @@ def notify_expiring():
     ]
     return jsonify({"expiring_items": expiring_items}), 200
 
+
+# Define a route for the homepage
+@app.route('/')
+def home():
+    return """
+        <h1>Welcome to the SmartShelf API!</h1>
+        <p>Available endpoints:</p>
+        <ul>
+            <li>/add_food (POST)</li>
+            <li>/food_items (GET)</li>
+            <li>/delete_food/<id> (DELETE)</li>
+            <li>/update_food/<id> (PUT)</li>
+            <li>/notify_expiring (GET)</li>
+        </ul>
+    """
+
+# Define a route that returns a JSON response
+@app.route('/data')
+def get_data():
+    return jsonify({"message": "This is a simple JSON response", "status": "success"})
+
 if __name__ == '__main__':
-    #load_food_items()  # Load existing food items on startup
+    load_food_items()  
     app.run(debug=True)
