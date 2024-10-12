@@ -22,6 +22,15 @@ def load_food_items():
     except FileNotFoundError:
         food_items = []
 
+# Save food items to a JSON file (optional)
+def save_food_items():
+    with open('food_items.json', 'w') as file:
+        json.dump(food_items, file)
+
+@app.route('/')
+def home():
+    return "Welcome to the SmartShelf API! Available endpoints: /add_food, /food_items, /delete_food/<id>, /update_food/<id>, /notify_expiring"
+
 @app.route('/add_food', methods=['POST'])
 def add_food():
     data = request.get_json()
