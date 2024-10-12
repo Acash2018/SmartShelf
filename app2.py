@@ -22,26 +22,6 @@ def load_food_items():
     except FileNotFoundError:
         food_items = []
 
-# Save food items to a JSON file (optional)
-def save_food_items():
-    with open('food_items.json', 'w') as file:
-        json.dump(food_items, file)
-
-@app.route('/')
-def home():
-    return """
-        <h1>Welcome to the SmartShelf API!</h1>
-        <p>Available endpoints:</p>
-        <ul>
-            <li><a href="/add_food" target="_blank">/add_food (POST)</a> - To add food, use a POST request with JSON</li>
-            <li><a href="/food_items" target="_blank">/food_items (GET)</a> - See all available food items</li>
-            <li><a href="/delete_food/1" target="_blank">/delete_food/&lt;id&gt; (DELETE)</a> - Replace &lt;id&gt; with an item ID to delete</li>
-            <li><a href="/update_food/1" target="_blank">/update_food/&lt;id&gt; (PUT)</a> - Replace &lt;id&gt; with an item ID to update</li>
-            <li><a href="/notify_expiring" target="_blank">/notify_expiring (GET)</a> - Get items expiring in the next 3 days</li>
-        </ul>
-    """
-
-
 @app.route('/add_food', methods=['POST'])
 def add_food():
     data = request.get_json()
@@ -74,6 +54,7 @@ def add_food():
 def get_food_items():
     return jsonify({"food_items": food_items}), 200
 
+# Update the delete_food route to delete by unique ID
 @app.route('/delete_food/<string:item_id>', methods=['DELETE'])
 def delete_food(item_id):
     item = next((item for item in food_items if item['id'] == item_id), None)
@@ -89,6 +70,7 @@ def update_food(item_id):
     item = next((item for item in food_items if item['id'] == item_id), None)
     
     if item:
+        # Update the item if it's found
         item['name'] = data.get('name', item['name'])  # Update name if provided
         expiration_date = data.get('expiration_date')
         
@@ -109,10 +91,31 @@ def notify_expiring():
     today = datetime.now().date()
     expiring_items = [
         item for item in food_items
-        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
+    if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
     ]
     return jsonify({"expiring_items": expiring_items}), 200
 
+
+# Define a route for the homepage
+@app.route('/')
+def home():
+    return """
+        <h1>Welcome to the SmartShelf API!</h1>
+        <p>Available endpoints:</p>
+        <ul>
+            <li>/add_food (POST)</li>
+            <li>/food_items (GET)</li>
+            <li>/delete_food/<id> (DELETE)</li>
+            <li>/update_food/<id> (PUT)</li>
+            <li>/notify_expiring (GET)</li>
+        </ul>
+    """
+
+# Define a route that returns a JSON response
+@app.route('/data')
+def get_data():
+    return jsonify({"message": "This is a simple JSON response", "status": "success"})
+
 if __name__ == '__main__':
-    load_food_items()  # Load existing food items on startup
+    load_food_items()  
     app.run(debug=True)
