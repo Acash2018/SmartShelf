@@ -33,13 +33,14 @@ def home():
         <h1>Welcome to the SmartShelf API!</h1>
         <p>Available endpoints:</p>
         <ul>
-            <li>/add_food (POST)</li>
-            <li>/food_items (GET)</li>
-            <li>/delete_food/&lt;id&gt; (DELETE)</li>
-            <li>/update_food/&lt;id&gt; (PUT)</li>
-            <li>/notify_expiring (GET)</li>
+            <li><a href="/add_food" target="_blank">/add_food (POST)</a> - To add food, use a POST request with JSON</li>
+            <li><a href="/food_items" target="_blank">/food_items (GET)</a> - See all available food items</li>
+            <li><a href="/delete_food/1" target="_blank">/delete_food/&lt;id&gt; (DELETE)</a> - Replace &lt;id&gt; with an item ID to delete</li>
+            <li><a href="/update_food/1" target="_blank">/update_food/&lt;id&gt; (PUT)</a> - Replace &lt;id&gt; with an item ID to update</li>
+            <li><a href="/notify_expiring" target="_blank">/notify_expiring (GET)</a> - Get items expiring in the next 3 days</li>
         </ul>
     """
+
 
 @app.route('/add_food', methods=['POST'])
 def add_food():
