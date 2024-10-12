@@ -103,5 +103,5 @@ def notify_expiring():
     return jsonify({"expiring_items": expiring_items}), 200
 
 if __name__ == '__main__':
-    load_food_items()  # Load existing food items on startup
+    #load_food_items()  # Load existing food items on startup
     app.run(debug=True)
