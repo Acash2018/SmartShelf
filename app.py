@@ -1,31 +1,27 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-import uuid
-import json
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
 
-# In-memory storage for food items (or you can use a database)
-food_items = []
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///food_items.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Load food items from a JSON file at startup (optional)
-def load_food_items():
-    global food_items
-    try:
-        with open('food_items.json', 'r') as file:
-            food_items = json.load(file)
-            # Convert expiration dates back to 'MM-DD-YYYY' format
-            for item in food_items:
-                item['expiration_date'] = datetime.strptime(item['expiration_date'], '%m-%d-%Y').strftime('%m-%d-%Y')
-    except FileNotFoundError:
-        food_items = []
+db = SQLAlchemy(app)
 
-# Save food items to a JSON file (optional)
-def save_food_items():
-    with open('food_items.json', 'w') as file:
-        json.dump(food_items, file)
+# Model for Food Item
+class FoodItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    expiration_date = db.Column(db.String(10), nullable=False)
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name, "expiration_date": self.expiration_date}
+
+# Initialize the database
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def home():
@@ -33,86 +29,82 @@ def home():
         <h1>Welcome to the SmartShelf API!</h1>
         <p>Available endpoints:</p>
         <ul>
-            <li><a href="/add_food" target="_blank">/add_food (POST)</a> - To add food, use a POST request with JSON</li>
-            <li><a href="/food_items" target="_blank">/food_items (GET)</a> - See all available food items</li>
-            <li><a href="/delete_food/1" target="_blank">/delete_food/&lt;id&gt; (DELETE)</a> - Replace &lt;id&gt; with an item ID to delete</li>
-            <li><a href="/update_food/1" target="_blank">/update_food/&lt;id&gt; (PUT)</a> - Replace &lt;id&gt; with an item ID to update</li>
-            <li><a href="/notify_expiring" target="_blank">/notify_expiring (GET)</a> - Get items expiring in the next 3 days</li>
+            <li>/add_food (POST)</li>
+            <li>/food_items (GET)</li>
+            <li>/delete_food/&lt;id&gt; (DELETE)</li>
+            <li>/update_food/&lt;id&gt; (PUT)</li>
+            <li>/notify_expiring (GET)</li>
         </ul>
     """
 
-
+# Add new food
 @app.route('/add_food', methods=['POST'])
 def add_food():
     data = request.get_json()
-    food_name = data.get('name')
+    name = data.get('name')
     expiration_date = data.get('expiration_date')
 
-    if not food_name or not expiration_date:
+    if not name or not expiration_date:
         return jsonify({"error": "Missing name or expiration date"}), 400
-    
-    # Validate expiration date format (MM-DD-YYYY)
-    try:
-        expiration_date = datetime.strptime(expiration_date, '%m-%d-%Y').date()
-    except ValueError:
-        return jsonify({"error": "Invalid expiration date format. Use MM-DD-YYYY."}), 400
 
     # Check for duplicate food items
-    if any(item['name'] == food_name and item['expiration_date'] == expiration_date.strftime('%m-%d-%Y') for item in food_items):
+    existing_item = FoodItem.query.filter_by(name=name, expiration_date=expiration_date).first()
+    if existing_item:
         return jsonify({"error": "Food item with the same name and expiration date already exists."}), 400
 
-    food_items.append({
-        "id": str(uuid.uuid4()),  # Assign unique ID
-        "name": food_name,
-        "expiration_date": expiration_date.strftime('%m-%d-%Y')  # Store as string for consistency
-    })
+    # Add new food item
+    new_food = FoodItem(name=name, expiration_date=expiration_date)
+    db.session.add(new_food)
+    db.session.commit()
 
-    save_food_items()  # Save to file
-    return jsonify({"message": "Food item added successfully", "food_items": food_items}), 201
+    return jsonify({"message": "Food item added successfully", "food_item": new_food.to_dict()}), 201
 
+# Get all food items
 @app.route('/food_items', methods=['GET'])
 def get_food_items():
-    return jsonify({"food_items": food_items}), 200
+    items = FoodItem.query.all()
+    return jsonify({"food_items": [item.to_dict() for item in items]}), 200
 
-@app.route('/delete_food/<string:item_id>', methods=['DELETE'])
-def delete_food(item_id):
-    item = next((item for item in food_items if item['id'] == item_id), None)
-    if item:
-        food_items.remove(item)
-        save_food_items()
-        return jsonify({"message": "Food item deleted", "removed_item": item}), 200
-    return jsonify({"error": "Item not found"}), 404
-
-@app.route('/update_food/<string:item_id>', methods=['PUT'])
+# Update a food item by ID
+@app.route('/update_food/<int:item_id>', methods=['PUT'])
 def update_food(item_id):
     data = request.get_json()
-    item = next((item for item in food_items if item['id'] == item_id), None)
-    
+    item = FoodItem.query.get(item_id)
+
     if item:
-        item['name'] = data.get('name', item['name'])  # Update name if provided
+        item.name = data.get('name', item.name)
         expiration_date = data.get('expiration_date')
-        
-        # Update expiration date if provided and valid
+
         if expiration_date:
             try:
-                expiration_date = datetime.strptime(expiration_date, '%m-%d-%Y').date()
-                item['expiration_date'] = expiration_date.strftime('%m-%d-%Y')
+                expiration_date_obj = datetime.strptime(expiration_date, '%m-%d-%Y').date()
+                item.expiration_date = expiration_date_obj.strftime('%m-%d-%Y')
             except ValueError:
                 return jsonify({"error": "Invalid expiration date format. Use MM-DD-YYYY."}), 400
         
-        save_food_items()  # Save changes to file
-        return jsonify({"message": "Food item updated", "food_item": item}), 200
+        db.session.commit()
+        return jsonify({"message": "Food item updated", "food_item": item.to_dict()}), 200
     return jsonify({"error": "Item not found"}), 404
 
+# Delete a food item by ID
+@app.route('/delete_food/<int:item_id>', methods=['DELETE'])
+def delete_food(item_id):
+    item = FoodItem.query.get(item_id)
+    if item:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": "Food item deleted", "removed_item": item.to_dict()}), 200
+    return jsonify({"error": "Item not found"}), 404
+
+# Notify for items expiring in 3 days
 @app.route('/notify_expiring', methods=['GET'])
 def notify_expiring():
     today = datetime.now().date()
-    expiring_items = [
-        item for item in food_items
-        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
-    ]
-    return jsonify({"expiring_items": expiring_items}), 200
+    expiring_items = FoodItem.query.filter(
+        FoodItem.expiration_date <= (today + timedelta(days=3)).strftime('%m-%d-%Y')
+    ).all()
+
+    return jsonify({"expiring_items": [item.to_dict() for item in expiring_items]}), 200
 
 if __name__ == '__main__':
-    #load_food_items()  # Load existing food items on startup
     app.run(debug=True)
