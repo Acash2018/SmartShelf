@@ -1,8 +1,6 @@
 import React from "react";
-import { deleteFoodItem } from "../services/api"; // Import the delete function from the API
 
-const FoodTable = ({ foodList, refreshFoodList }) => {
-  // Function to calculate the food item's status based on expiration date
+const FoodTable = ({ foodList, deleteFood }) => {
   const calculateStatus = (expirationDate) => {
     const today = new Date();
     const expDate = new Date(expirationDate);
@@ -13,48 +11,40 @@ const FoodTable = ({ foodList, refreshFoodList }) => {
     return "Fresh";
   };
 
-  // Function to handle the delete action
-  const handleDelete = async (id) => {
-    try {
-      await deleteFoodItem(id); // Call the backend API to delete the item
-      console.log("Deleting item with ID:", id);
-
-      refreshFoodList(); // Refresh the list of food items
-    } catch (error) {
-      alert("Failed to delete the food item. Please try again.");
-    }
-  };
-
   return (
-    <div className="food-table">
-      <h2>Food Items</h2>
-      {foodList.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Food Name</th>
-              <th>Expiration Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {foodList.map((food) => (
-              <tr key={food.id}>
-                <td>{food.name}</td>
-                <td>{food.expiration_date}</td>
-                <td>{calculateStatus(food.expiration_date)}</td>
-                <td>
-                  <button onClick={() => handleDelete(food.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No food items found.</p>
-      )}
-    </div>
+    <table className="food-table">
+      <thead>
+        <tr>
+          <th>Food Name</th>
+          <th>Expiration Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foodList.map((food) => (
+          <tr key={food.id}>
+            <td>{food.name}</td>
+            <td>{food.expiration_date}</td>
+            <td>{calculateStatus(food.expiration_date)}</td>
+            <td>
+              {/* Delete Button */}
+              <button onClick={() => deleteFood(food.id)}>Delete</button>
+              
+              {/* Debugging Delete Button */}
+              <button
+                onClick={() => {
+                  console.log("Attempting to delete food with ID:", food.id);
+                  deleteFood(food.id);
+                }}
+              >
+                Debug Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 

@@ -1,10 +1,5 @@
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://127.0.0.1:5000", // Backend URL
-});
-
-
 export const deleteFoodItem = async (id) => {
   try {
     const response = await axios.delete(`/delete_food/${id}`);
@@ -14,5 +9,9 @@ export const deleteFoodItem = async (id) => {
     throw error;
   }
 };
+
+const instance = axios.create({
+  baseURL: "http://127.0.0.1:5000", // Backend URL
+});
 export default instance;
 
