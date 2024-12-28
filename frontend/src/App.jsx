@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AddFoodForm from './components/AddFoodForm';
 import FoodTable from "./components/FoodTable";
 import "./index.css";
 import axios from "./services/api";

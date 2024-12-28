@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "../services/api";
+import axios from "../services/api"; // Import the Axios instance
 
 const AddFoodForm = ({ refreshFoodList }) => {
   const [name, setName] = useState("");
@@ -8,12 +8,21 @@ const AddFoodForm = ({ refreshFoodList }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/add_food", { name, expiration_date: expirationDate });
+      // Send POST request to /add_food
+      await axios.post("/add_food", {
+        name: name.trim(),
+        expiration_date: expirationDate, // Format: MM-DD-YYYY
+      });
+
+      // Clear form fields
       setName("");
       setExpirationDate("");
-      refreshFoodList(); // Refresh the table after adding
+
+      // Refresh the food list
+      refreshFoodList();
     } catch (error) {
-      console.error("Error adding food:", error);
+      console.error("Error adding food item:", error);
+      alert("Failed to add food item. Please try again.");
     }
   };
 
