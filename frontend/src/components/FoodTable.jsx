@@ -19,7 +19,6 @@ const FoodTable = ({ foodList, refreshFoodList }) => {
       await deleteFoodItem(id); // Call the backend API to delete the item
       refreshFoodList(); // Refresh the list of food items
     } catch (error) {
-      console.error("Error deleting food item:", error);
       alert("Failed to delete the food item. Please try again.");
     }
   };
