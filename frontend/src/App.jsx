@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import AddFoodForm from './components/AddFoodForm';
 import FoodTable from "./components/FoodTable";
 import "./index.css";
@@ -36,7 +37,7 @@ const App = () => {
     <div className="app">
       <h1>SmartShelf - Food Expiration Tracker</h1>
       <AddFoodForm refreshFoodList={fetchFoodItems} />
-      <FoodTable foodList={foodList} deleteFood={deleteFoodItem} />
+      <FoodTable foodList={foodList} deleteFood={deleteFoodItem} refreshFoodList={fetchFoodItems}/>
     </div>
   );
 };

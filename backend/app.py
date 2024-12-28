@@ -56,6 +56,8 @@ def get_food_items():
 def delete_food(item_id):
     global food_items
     # Filter out the item with the given ID
+    print(f"Current food items: {food_items}")  # Debugging
+    print(f"Attempting to delete item with ID: {item_id}")
     food_items = [item for item in food_items if item["id"] != item_id]
     return jsonify({"message": f"Food item with ID {item_id} deleted"}), 200
 
