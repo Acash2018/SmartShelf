@@ -106,4 +106,33 @@
       font-size: 0.9rem;
     }
   }
-        
+/* Expiration status styles */
+.status {
+    font-weight: bold;
+  }
+  
+  .status.fresh {
+    color: green;
+  }
+  
+  .status.expiring-soon {
+    color: orange;
+  }
+  
+  .status.expired {
+    color: red;
+  }
+  
+  /* Button styles */
+  .food-table button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .food-table button:hover {
+    background-color: #cc0000;
+  }
