@@ -5,3 +5,13 @@ const instance = axios.create({
 });
 
 export default instance;
+
+export const deleteFoodItem = async (id) => {
+  try {
+    const response = await axios.delete(`/delete_food/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting food item:", error);
+    throw error;
+  }
+};
