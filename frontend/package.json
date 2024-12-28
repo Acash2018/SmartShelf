@@ -1,25 +1,26 @@
 {
-    "name": "smartshelf-frontend",
+    "name": "smartshelf",
     "version": "1.0.0",
-    "private": true,
-    "dependencies": {
-      "axios": "^1.4.0",                  // For API requests
-      "react": "^18.2.0",                 // React library
-      "react-dom": "^18.2.0",             // React DOM rendering
-      "react-scripts": "5.0.1",           // React build and dev scripts
-      "web-vitals": "^2.1.4"              // For measuring performance
-    },
+    "description": "SmartShelf - A Food Expiration Tracker",
+    "main": "index.js",
     "scripts": {
-      "start": "react-scripts start",     // Start development server
-      "build": "react-scripts build",     // Build the app for production
-      "test": "react-scripts test",       // Run tests
-      "eject": "react-scripts eject"      // Eject config (use cautiously)
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test",
+      "eject": "react-scripts eject"
     },
-    "eslintConfig": {
-      "extends": [
-        "react-app",
-        "react-app/jest"
-      ]
+    "keywords": [
+      "react",
+      "food-expiration",
+      "tracker"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+      "axios": "^1.4.0",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "react-scripts": "^5.0.1"
     },
     "browserslist": {
       "production": [
@@ -32,9 +33,6 @@
         "last 1 firefox version",
         "last 1 safari version"
       ]
-    },
-    "devDependencies": {
-      "eslint": "^8.48.0"                // Optional for linting
     }
   }
   
