@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import axios from "../services/api";
-import "../styles/components.css"; // Import the CSS file
 
-const AddFoodForm = () => {
+const AddFoodForm = ({ refreshFoodList }) => {
   const [name, setName] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("/add_food", { name, expiration_date: expirationDate });
-    setName("");
-    setExpirationDate("");
+    try {
+      await axios.post("/add_food", { name, expiration_date: expirationDate });
+      setName("");
+      setExpirationDate("");
+      refreshFoodList(); // Refresh the table after adding
+    } catch (error) {
+      console.error("Error adding food:", error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="add-food-form">
       <input
         type="text"
         placeholder="Food Name"

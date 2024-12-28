@@ -1,39 +1,75 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+.app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
   }
   
   h1 {
     text-align: center;
-    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .add-food-form {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .add-food-form input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(50% - 20px);
+  }
+  
+  .add-food-form button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-food-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .food-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .food-table th,
+  .food-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .food-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .food-table td {
+    background-color: #fff;
   }
   
   button {
-    background-color: #007bff;
+    padding: 8px 12px;
+    background-color: #dc3545;
     color: white;
     border: none;
-    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
   }
   
   button:hover {
-    background-color: #0056b3;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-  
-  table th,
-  table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+    background-color: #c82333;
   }
   
