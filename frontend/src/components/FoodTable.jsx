@@ -17,6 +17,8 @@ const FoodTable = ({ foodList, refreshFoodList }) => {
   const handleDelete = async (id) => {
     try {
       await deleteFoodItem(id); // Call the backend API to delete the item
+      console.log("Deleting item with ID:", id);
+
       refreshFoodList(); // Refresh the list of food items
     } catch (error) {
       alert("Failed to delete the food item. Please try again.");
