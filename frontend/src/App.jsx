@@ -7,6 +7,7 @@ import axios from "./services/api";
 
 const App = () => {
   const [foodList, setFoodList] = useState([]);
+  const [email, setEmail] = useState("");
 
   // Fetch food items from the backend
   const fetchFoodItems = async () => {
@@ -15,6 +16,21 @@ const App = () => {
       setFoodList(response.data.food_items); // Update the food list
     } catch (error) {
       console.error("Error fetching food items:", error);
+    }
+  };
+
+
+  const sendEmail = async () => {
+    try {
+      if (!email) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      await axios.post("/send_email", { email });
+      alert("Email sent successfully!");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Failed to send email. Please try again.");
     }
   };
 

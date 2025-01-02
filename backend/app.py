@@ -1,8 +1,18 @@
 from flask import Flask, request, jsonify
+from flask_mail import Mail, Message
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
+
+# Configure Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'your_email@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'your_password'         # Replace with your email password
+
+mail = Mail(app)
 
 # In-memory storage for food items
 food_items = []
@@ -90,6 +100,45 @@ def notify_expiring():
         if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
     ]
     return jsonify({"expiring_items": expiring_items}), 200
+
+@app.route('/send_email', methods=['POST'])
+def send_email():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    # Find expired or expiring soon items
+    from datetime import datetime, timedelta
+    today = datetime.now().date()
+    expiring_items = [
+        item for item in food_items
+        if datetime.strptime(item["expiration_date"], '%Y-%m-%d').date() <= today + timedelta(days=3)
+    ]
+
+    if not expiring_items:
+        return jsonify({"message": "No expiring items to send."}), 200
+
+    # Create the email content
+    item_list = "\n".join(
+        [f"{item['name']} (Expires on {item['expiration_date']})" for item in expiring_items]
+    )
+    email_body = f"Here are your expiring or expired items:\n\n{item_list}"
+
+    # Send the email
+    try:
+        msg = Message(
+            "Your Expiring Items",
+            sender="your_email@gmail.com",
+            recipients=[email]
+        )
+        msg.body = email_body
+        mail.send(msg)
+        return jsonify({"message": "Email sent successfully!"}), 200
+    except Exception as e:
+        print("Error sending email:", e)
+        return jsonify({"error": "Failed to send email"}), 500
 
 
 if __name__ == '__main__':
