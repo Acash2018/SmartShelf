@@ -9,6 +9,8 @@ from sendgrid.helpers.mail import Mail
 
 
 load_dotenv()
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+print(os.getenv('SENDGRID_API_KEY'))
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
@@ -105,7 +107,6 @@ def notify_expiring():
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
-    print(os.getenv('SENDGRID_API_KEY'))
     data = request.get_json()
     recipient_email = data.get('email')
 
