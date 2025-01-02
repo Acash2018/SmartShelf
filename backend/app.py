@@ -142,8 +142,10 @@ def send_email():
 
         return jsonify({"message": "Email sent successfully!"}), 200
     except Exception as e:
-        print("Error sending email:", e)
-        return jsonify({"error": "Failed to send email"}), 500
+        print("Error sending email:")
+        print(e)  # Print the actual exception for debugging
+        return jsonify({"error": "Failed to send email", "details": str(e)}), 500
+
 
 
 if __name__ == '__main__':
