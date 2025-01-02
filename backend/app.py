@@ -129,23 +129,21 @@ def send_email():
     # Send the email using SendGrid
     try:
         sg = sendgrid.SendGridAPIClient(api_key=os.getenv('SENDGRID_API_KEY'))
-        from_email = Email("your_email@example.com")  # Replace with your SendGrid verified sender
+        from_email = Email("your_verified_sender_email@example.com")  # Replace with verified sender email
         to_email = To(email)
         subject = "Your Expiring Items"
         content = Content("text/plain", email_body)
         mail = Mail(from_email, to_email, subject, content)
 
         response = sg.send(mail)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        print("SendGrid Response Code:", response.status_code)
+        print("SendGrid Response Body:", response.body)
+        print("SendGrid Response Headers:", response.headers)
 
         return jsonify({"message": "Email sent successfully!"}), 200
     except Exception as e:
-        print("Error sending email:")
-        print(e)  # Print the actual exception for debugging
+        print("Error sending email:", e)
         return jsonify({"error": "Failed to send email", "details": str(e)}), 500
-
 
 
 if __name__ == '__main__':
