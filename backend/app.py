@@ -25,6 +25,7 @@ def home():
 # Route to add a food item
 @app.route('/add_food', methods=['POST'])
 def add_food():
+    global id_counter
     data = request.get_json()
 
     # Validate incoming data
@@ -34,13 +35,14 @@ def add_food():
     if not name or not expiration_date:
         return jsonify({"error": "Name and expiration date are required"}), 400
 
-    # Create and append a new food item
+    # Create and append a new food item with an incrementing ID
     food_item = {
-        "id": len(food_items) + 1,  # Simple ID generation
+        "id": id_counter,  # Use the counter for unique IDs
         "name": name,
         "expiration_date": expiration_date
     }
     food_items.append(food_item)
+    id_counter += 1  # Increment the counter for the next item
 
     return jsonify({"message": "Food item added successfully", "food_item": food_item}), 201
 
