@@ -4,6 +4,8 @@ import os
 from dotenv import load_dotenv
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 load_dotenv()
@@ -103,10 +105,11 @@ def notify_expiring():
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
+    print(os.getenv('SENDGRID_API_KEY'))
     data = request.get_json()
-    email = data.get('email')
+    recipient_email = data.get('email')
 
-    if not email:
+    if not recipient_email:
         return jsonify({"error": "Email is required"}), 400
 
     # Find expired or expiring soon items
@@ -114,7 +117,7 @@ def send_email():
     today = datetime.now().date()
     expiring_items = [
         item for item in food_items
-        if datetime.strptime(item["expiration_date"], '%Y-%m-%d').date() <= today + timedelta(days=3)
+        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
     ]
 
     if not expiring_items:
@@ -127,23 +130,22 @@ def send_email():
     email_body = f"Here are your expiring or expired items:\n\n{item_list}"
 
     # Send the email using SendGrid
+    message = Mail(
+        from_email='noreply@smartshelf.com',
+        to_emails=recipient_email,
+        subject="Your Expiring Items",
+        plain_text_content=email_body
+    )
     try:
-        sg = sendgrid.SendGridAPIClient(api_key=os.getenv('SENDGRID_API_KEY'))
-        from_email = Email("your_verified_sender_email@example.com")  # Replace with verified sender email
-        to_email = To(email)
-        subject = "Your Expiring Items"
-        content = Content("text/plain", email_body)
-        mail = Mail(from_email, to_email, subject, content)
-
-        response = sg.send(mail)
-        print("SendGrid Response Code:", response.status_code)
-        print("SendGrid Response Body:", response.body)
-        print("SendGrid Response Headers:", response.headers)
-
+        sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
         return jsonify({"message": "Email sent successfully!"}), 200
     except Exception as e:
         print("Error sending email:", e)
-        return jsonify({"error": "Failed to send email", "details": str(e)}), 500
+        return jsonify({"error": "Failed to send email"}), 500
 
 
 if __name__ == '__main__':
