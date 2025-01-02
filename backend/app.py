@@ -133,7 +133,7 @@ def send_email():
 
     # Send the email using SendGrid
     message = Mail(
-        from_email='noreply@smartshelf.com',
+        from_email='aakash7tripathi@gmail.com',
         to_emails=recipient_email,
         subject="Your Expiring Items",
         plain_text_content=email_body
