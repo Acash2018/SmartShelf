@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
-from flask_mail import Mail, Message
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
+
 
 load_dotenv()
 
@@ -131,15 +133,20 @@ def send_email():
     )
     email_body = f"Here are your expiring or expired items:\n\n{item_list}"
 
-    # Send the email
+    # Send the email using SendGrid
     try:
-        msg = Message(
-            "Your Expiring Items",
-            sender="your_email@gmail.com",
-            recipients=[email]
-        )
-        msg.body = email_body
-        mail.send(msg)
+        sg = sendgrid.SendGridAPIClient(api_key=os.getenv('SENDGRID_API_KEY'))
+        from_email = Email("your_email@example.com")  # Replace with your SendGrid verified sender
+        to_email = To(email)
+        subject = "Your Expiring Items"
+        content = Content("text/plain", email_body)
+        mail = Mail(from_email, to_email, subject, content)
+
+        response = sg.send(mail)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+
         return jsonify({"message": "Email sent successfully!"}), 200
     except Exception as e:
         print("Error sending email:", e)
