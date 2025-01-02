@@ -116,9 +116,10 @@ def send_email():
     from datetime import datetime, timedelta
     today = datetime.now().date()
     expiring_items = [
-        item for item in food_items
-        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
-    ]
+    item for item in food_items
+    if datetime.strptime(item["expiration_date"], '%Y-%m-%d').date() <= today + timedelta(days=3)
+]
+
 
     if not expiring_items:
         return jsonify({"message": "No expiring items to send."}), 200
