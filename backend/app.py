@@ -28,6 +28,7 @@ def home():
         <li><strong>DELETE</strong> <code>/delete_food/&lt;id&gt;</code>: Delete a food item by ID</li>
         <li><strong>PUT</strong> <code>/update_food/&lt;id&gt;</code>: Update a food item by ID</li>
         <li><strong>GET</strong> <code>/notify_expiring</code>: Get expiring food items</li>
+         <li><strong>POST</strong> <code>/send_email</code>: Send an email with expiring/expired food items</li>
     </ul>
     """
 
