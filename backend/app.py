@@ -23,6 +23,9 @@ def home():
 
 
 # Route to add a food item
+
+# Counter for unique IDs
+id_counter = 1
 @app.route('/add_food', methods=['POST'])
 def add_food():
     global id_counter
