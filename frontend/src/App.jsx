@@ -54,6 +54,16 @@ const App = () => {
       <h1>SmartShelf - Food Expiration Tracker</h1>
       <AddFoodForm refreshFoodList={fetchFoodItems} />
       <FoodTable foodList={foodList} deleteFood={deleteFoodItem} refreshFoodList={fetchFoodItems}/>
+      <div className="email-section">
+        <h2>Get Expiring Items via Email</h2>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button onClick={sendEmail}>Send Email</button>
+      </div>
     </div>
   );
 };
