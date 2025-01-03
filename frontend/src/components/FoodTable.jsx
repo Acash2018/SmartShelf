@@ -31,15 +31,7 @@ const FoodTable = ({ foodList, deleteFood }) => {
               {/* Delete Button */}
               <button onClick={() => deleteFood(food.id)}>Delete</button>
               
-              {/* Debugging Delete Button */}
-              <button
-                onClick={() => {
-                  console.log("Attempting to delete food with ID:", food.id);
-                  deleteFood(food.id);
-                }}
-              >
-                Debug Delete
-              </button>
+              
             </td>
           </tr>
         ))}
