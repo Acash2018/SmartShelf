@@ -50,10 +50,10 @@ set NODE_OPTIONS=--openssl-legacy-provider && npm start
 
 ## Usage
 
-1. Open your browser and navigate to `http://localhost:3000` to access the app.
-2. Add food items with their expiration dates using the form.
-3. Monitor the table for food status updates (`Expired`, `Expiring Soon`, or `Fresh`).
-4. Use the "Send Email" button to receive email notifications about expiring items.
+   1. Open your browser and navigate to `http://localhost:3000` to access the app.
+   2. Add food items with their expiration dates using the form.
+   3. Monitor the table for food status updates (`Expired`, `Expiring Soon`, or `Fresh`).
+   4. Use the "Send Email" button to receive email notifications about expiring items.
 
 ---
 
@@ -85,14 +85,10 @@ set NODE_OPTIONS=--openssl-legacy-provider && npm start
 
 ---
 
-## License
 
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 ## Contributors
 
-- **Your Name**
+- **Aakash Tripathi**
 
-Feel free to fork the project, contribute, or report issues. Enjoy using SmartShelf!
+Enjoy using SmartShelf!

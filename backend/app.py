@@ -129,11 +129,16 @@ def send_email():
     item_list = "\n".join(
         [f"{item['name']} (Expires on {item['expiration_date']})" for item in expiring_items]
     )
-    email_body = f"Here are your expiring or expired items:\n\n{item_list}"
+    
+    email_body = (
+        "Here are your expiring or expired items:\n\n"
+        f"{item_list}\n\n"
+        "Note: All dates are reported in the YYYY-MM-DD format."
+    )
 
     # Send the email using SendGrid
     message = Mail(
-        from_email='aakash7tripathi@gmail.com',
+        from_email='smartshelftracker@gmail.com',
         to_emails=recipient_email,
         subject="Your Expiring Items",
         plain_text_content=email_body
