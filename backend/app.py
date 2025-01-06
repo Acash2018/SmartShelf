@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 # Load environment variables
 load_dotenv()
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-print("SendGrid API Key:", SENDGRID_API_KEY)
+#print("SendGrid API Key:", SENDGRID_API_KEY)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
