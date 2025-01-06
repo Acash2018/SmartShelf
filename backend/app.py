@@ -1,9 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
-from dotenv import load_dotenv
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-import os
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 
 # Load environment variables
