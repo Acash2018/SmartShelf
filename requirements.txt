@@ -1,0 +1,3 @@
+FLASK
+Flask-CORS
+Flask-Mail
