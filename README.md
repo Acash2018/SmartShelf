@@ -38,7 +38,18 @@ API Endpoints
 
 Troubleshooting
   Common Issues
-    Email not sent: Ensure your .env file contains a valid SENDGRID_API_KEY. Check your SendGrid dashboard for email activity.
+    Email not sent: Ensure your .env file contains a valid SENDGRID_API_KEY. Check your SendGrid dashboard for email activity.\
+
+Setting Up Email Notifications
+  To enable email notifications, you'll need a SendGrid account. Follow these steps:
+    1. Sign up at [SendGrid](https://sendgrid.com/).
+    2. Generate an API key by going to **Settings > API Keys** in your SendGrid dashboard.
+    3. Create a `.env` file in the `backend` directory and add the following line:
+   ```
+   SENDGRID_API_KEY=your_sendgrid_api_key
+   ```
+  4. Save the file. Do not commit this file to the repository.
+
 
 Frontend not starting: Use the command: set NODE_OPTIONS=--openssl-legacy-provider && npm start.
 
