@@ -49,7 +49,7 @@ def home():
         <li><strong>DELETE</strong> <code>/delete_food/&lt;id&gt;</code>: Delete a food item by ID</li>
         <li><strong>PUT</strong> <code>/update_food/&lt;id&gt;</code>: Update a food item by ID</li>
         <li><strong>GET</strong> <code>/notify_expiring</code>: Get expiring food items</li>
-         <li><strong>POST</strong> <code>/send_email</code>: Send an email with expiring/expired food items</li>
+        <li><strong>POST</strong> <code>/send_email</code>: Send an email with expiring/expired food items</li>
     </ul>
     """
 
@@ -138,12 +138,14 @@ def update_food(item_id):
 
 # Route to notify about expiring items
 @app.route('/notify_expiring', methods=['GET'])
+def notify_expiring():
     global food_items
     # Filter out the item with the given ID
     print(f"Current food items: {food_items}")  # Debugging
     print(f"Attempting to delete item with ID: {item_id}")
     food_items = [item for item in food_items if item["id"] != item_id]
     return jsonify({"message": f"Food item with ID {item_id} deleted"}), 200
+    
 
 
 # Route to update a food item by ID
@@ -167,7 +169,7 @@ def notify_expiring():
     today = datetime.now().date()
     expiring_items = [
         item for item in food_items
-        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)
+        if datetime.strptime(item["expiration_date"], '%m-%d-%Y').date() <= today + timedelta(days=3)]
     today = datetime.now().date()
     expiring_items = [
         item for item in food_items
