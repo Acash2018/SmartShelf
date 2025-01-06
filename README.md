@@ -48,7 +48,17 @@ Setting Up Email Notifications
    ```
    SENDGRID_API_KEY=your_sendgrid_api_key
    ```
-  4. Save the file. Do not commit this file to the repository.
+   4. Save the file. Do not commit this file to the repository.
+
+Setting Up the Sender Email
+  To send emails using this application, you'll need to configure a verified sender email:
+    1. Log in to your SendGrid account.
+    2. Go to **Settings > Sender Authentication**.
+    3. Add and verify your email address (e.g., `your_email@example.com`).
+    4. Add the email address to your `.env` file:
+   ```
+   SENDER_EMAIL=your_verified_email@example.com
+   ```
 
 
 Frontend not starting: Use the command: set NODE_OPTIONS=--openssl-legacy-provider && npm start.
