@@ -1,9 +1,38 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import axios from "../services/api"; // Import the Axios instance
+import axios from "../services/api";
+
 
 const AddFoodForm = ({ refreshFoodList }) => {
   const [name, setName] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
+  const [loading, setLoading] = useState(false);
+
+
+
+   // 🔹 New: Predict expiration when name changes
+  const handleNameChange = async (e) => {
+    const foodName = e.target.value;
+    setName(foodName);
+
+    if (foodName.trim().length > 2) {
+      try {
+        const response = await axios.post("/predict_expiration", {
+          food_name: foodName,
+        });
+
+        if (response.data.suggested_expiration) {
+          setExpirationDate(response.data.suggested_expiration);
+        }
+      } catch (error) {
+        console.error("Error predicting expiration:", error);
+      }
+      finally {
+        setLoading(false);
+      }
+    
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +57,12 @@ const AddFoodForm = ({ refreshFoodList }) => {
 
   return (
     <form onSubmit={handleSubmit} className="add-food-form">
+      {/* 🔹 Using handleNameChange */}
       <input
         type="text"
         placeholder="Food Name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleNameChange} 
         required
       />
       <input
@@ -41,9 +71,13 @@ const AddFoodForm = ({ refreshFoodList }) => {
         onChange={(e) => setExpirationDate(e.target.value)}
         required
       />
+      {loading && <p> Suggesting expiration...</p>}
       <button type="submit">Add Food</button>
     </form>
   );
+
+
+
 };
 
 export default AddFoodForm;

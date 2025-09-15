@@ -1,0 +1,5 @@
+{
+  "eslint.rules.customizations": [
+    { "rule": "react/react-in-jsx-scope", "severity": "off" }
+  ]
+}

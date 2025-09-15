@@ -6,11 +6,28 @@ import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
+import openai
+
 
 
 load_dotenv()
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-print(os.getenv('SENDGRID_API_KEY'))
+openai.api_key = os.getenv("OPENAI_API_KEY")
+#print(os.getenv('SENDGRID_API_KEY'))
+
+# Simple defaults
+DEFAULT_EXPIRATIONS = {
+    "milk": 7,
+    "bread": 5,
+    "spinach": 5,
+    "eggs": 14,
+    "cheese": 10,
+    "yogurt": 7
+}
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
@@ -153,6 +170,32 @@ def send_email():
     except Exception as e:
         print("Error sending email:", e)
         return jsonify({"error": "Failed to send email"}), 500
+    
+@app.route("/predict_expiration", methods=["POST"])
+def predict_expiration():
+    data = request.json
+    food_name = data.get("food_name", "").lower()
+
+    # If food is in defaults, return immediately
+    if food_name in DEFAULT_EXPIRATIONS:
+        days = DEFAULT_EXPIRATIONS[food_name]
+    else:
+        # Ask OpenAI for shelf life
+        prompt = f"How many days until {food_name} typically expires when stored in a fridge?"
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=50
+        )
+        answer = response.choices[0].message.content
+
+        # crude parse: find a number
+        import re
+        match = re.search(r'(\d+)', answer)
+        days = int(match.group(1)) if match else 3  # fallback
+
+    expiration_date = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
+    return jsonify({"suggested_expiration": expiration_date})
 
 
 if __name__ == '__main__':
