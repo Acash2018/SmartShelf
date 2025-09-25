@@ -1,0 +1,7 @@
+# SmartShelf backend runtime artifacts
+backend/.env
+backend/food_items.db
+backend/backups/
+backend/.venv/
+__pycache__/
+*.pem
